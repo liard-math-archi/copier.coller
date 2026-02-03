@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>copier.coller</title>
+  
+  <!-- Police Adobe Fonts - Nouvelle typo -->
+  <link rel="stylesheet" href="https://use.typekit.net/hqg8uet.css">
+  
+  <style>
+    /* ===== VARIABLES CSS ===== */
+    :root {
+      --fond: #FFFFFF;
+      --gris-clair: #e0e0e0;
+      --texte: #222;
+    }
+
+    /* ===== RESET ET BASE ===== */
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "acumin-variable", sans-serif;
+      font-variation-settings: "wght" 400;
+      font-weight: 400;
+      margin: 0;
+      padding: 0;
+      background-color: var(--fond);
+      color: var(--texte);
+    }
+
+    /* ===== HEADER FIXE ===== */
+    /* Le header reste toujours en haut de la page */
+    .fixed-top {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: var(--fond);
+      border-bottom: 1px solid var(--texte);
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 15px 30px;
+      background: var(--fond);
+    }
+
+    /* Logo cliquable à gauche */
+    header .logo {
+      font-size: 20px;
+      text-decoration: none;
+      color: var(--texte);
+      font-variation-settings: "wght" 400;
+      letter-spacing: 0.5px;
+    }
+
+    header .logo:hover {
+      opacity: 0.7;
+    }
+
+    /* Navigation décentrée (vers les 3/4 de la page) */
+    header nav {
+      display: flex;
+      gap: 40px;
+      position: absolute;
+      left: 70%;
+      transform: translateX(-50%);
+    }
+
+    header nav a {
+      font-family: "acumin-variable", sans-serif;
+      font-variation-settings: "wght" 400;
+      font-weight: 400;
+      text-decoration: none;
+      color: var(--texte);
+      font-size: 14px;
+      letter-spacing: 0.5px;
+      transition: opacity 0.2s ease;
+    }
+
+    header nav a:hover {
+      opacity: 0.7;
+    }
+
+    /* Bouton recherche à droite */
+    .search-container {
+      position: relative;
+    }
+
+    .search-toggle {
+      font-family: "acumin-variable", sans-serif;
+      font-variation-settings: "wght" 400;
+      background: none;
+      border: none;
+      color: var(--texte);
+      font-size: 14px;
+      cursor: pointer;
+      letter-spacing: 0.5px;
+      padding: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .search-toggle:hover {
+      opacity: 0.7;
+    }
+
+    /* Menu déroulant de recherche */
+    .search-dropdown {
+      display: none;
+      position: fixed;
+      left: 0;
+      right: 0;
+      top: 60px;
+      background-color: var(--fond);
+      width: 100%;
+      max-height: 400px;
+      overflow-y: auto;
+      box-shadow: 0px 8px 16px rgba(0,0,0,0.1);
+      border-bottom: 1px solid var(--texte);
+      padding: 20px 30px;
+      z-index: 101;
+    }
+
+    .search-dropdown.show {
+      display: block;
+    }
+
+
+    /* Style des tags de filtres */
+    .tag {
+      display: inline-block;
+      background-color: transparent;
+      border: 1px solid var(--gris-clair);
+      color: var(--texte);
+      padding: 6px 14px;
+      margin: 4px;
+      cursor: pointer;
+      font-size: 13px;
+      font-variation-settings: "wght" 300;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    .tag:hover {
+      background-color: var(--gris-clair);
+    }
+
+    /* Tag actif (sélectionné) */
+    .tag.active {
+      background-color: var(--texte);
+      color: var(--fond);
+      border-color: var(--texte);
+    }
+
+    /* ===== ESPACEMENT POUR HEADER FIXE ===== */
+    /* Compense la hauteur du header fixe */
+    .content-spacer {
+      height: 60px;
+    }
+
+    /* ===== GRILLE DE RÉFÉRENCES ===== */
+    /* Grille responsive qui s'adapte à la largeur de l'écran */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Adaptation mobile et tablette */
+    @media (max-width: 1200px) {
+      .grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    @media (max-width: 900px) {
+      .grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      header nav {
+        position: static;
+        transform: none;
+        gap: 20px;
+      }
+    }
+
+    /* ===== CARTES INDIVIDUELLES ===== */
+    /* Chaque carte de référence */
+    .card {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+      background: white;
+      margin: 0;
+      display: block;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      filter: grayscale(30%);
+      transition: transform 0.3s ease;
+    }
+
+    /* Effet au survol de la carte */
+    .card:hover img {
+      transform: scale(0.8);
+    }
+
+    /* Informations qui apparaissent au survol */
+    .info {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(255, 255, 255, 0.95);
+      color: #333;
+      font-size: 13px;
+      text-align: center;
+      padding: 8px;
+      opacity: 0;
+      transform: translateY(100%);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+      font-variation-settings: "wght" 300;
+      letter-spacing: 0.3px;
+    }
+
+    .card:hover .info {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ===== SENTINEL POUR SCROLL INFINI ===== */
+    /* Élément invisible qui déclenche le chargement de nouvelles cartes */
+    #sentinel {
+      height: 1px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== HEADER FIXE ===== -->
+  <div class="fixed-top">
+    <header>
+      <!-- Logo à gauche (cliquable) -->
+      <a href="copier.coller.02.html" class="logo">copier.coller</a>
+
+      <!-- Navigation au centre -->
+      <nav>
+        <a href="propos.html">à propos</a>
+        <a href="contact.html">contact</a>
+      </nav>
+
+      <!-- Bouton recherche à droite -->
+      <div class="search-container">
+        <button class="search-toggle">rechercher</button>
+        <div class="search-dropdown">
+          <span class="tag" data-tag="Architecture">Architecture</span>
+          <span class="tag" data-tag="Paysage">Paysage</span>
+          <span class="tag" data-tag="Urbanisme">Urbanisme</span>
+          <span class="tag" data-tag="Cinéma">Cinéma</span>
+          <span class="tag" data-tag="Scénographie">Scénographie</span>
+          <span class="tag" data-tag="Série">Série</span>
+          <span class="tag" data-tag="Roman graphique">Roman graphique</span>
+          <span class="tag" data-tag="Littérature">Littérature</span>
+          <span class="tag" data-tag="Musique">Musique</span>
+          <span class="tag" data-tag="Art Plastique">Art Plastique</span>
+          <span class="tag" data-tag="Logement">Logement</span>
+          <span class="tag" data-tag="Equipement">Équipement</span>
+          <span class="tag" data-tag="Béton">Béton</span>
+          <span class="tag" data-tag="Bois">Bois</span>
+          <span class="tag" data-tag="Brique">Brique</span>
+          <span class="tag" data-tag="Pierre">Pierre</span>
+          <span class="tag" data-tag="Design">Design</span>
+          <span class="tag" data-tag="Montagne">Montagne</span>
+        </div>
+      </div>
+    </header>
+  </div>
+
+  <!-- Espacement pour compenser le header fixe -->
+  <div class="content-spacer"></div>
+
+  <!-- ===== GRILLE DES RÉFÉRENCES ===== -->
+  <div class="grid" id="reference-list">
+    <!-- Les cartes sont insérées ici -->
+    <!-- Tu peux copier/coller cette structure pour ajouter tes références -->
+    
+    <!-- EXEMPLE DE RÉFÉRENCE -->
+    <a href="https://www.lego.com/fr-fr/themes/ninjago" class="card" target="_blank" data-tags="Architecture,Urbanisme,Béton">
+      <img src="https://s.ecrater.com/stores/437131/5f41ee32dea4b_437131b.jpg" alt="Lego Ninjago, 2011">
+      <div class="info">Lego Ninjago, 2011</div>
+    </a>
+
+    <a href="https://www.jacquesmonneraud.com/" class="card" target="_blank" data-tags="Architecture">
+  <img src="https://estudioarquitectos.cl/wp-content/uploads/2024/06/cardboard-pottery-ceramic-vessels-jacques-monneraud-carton-designboom-02.jpg" alt="Carton - Jacques Monneraud">
+  <div class="info">Carton - Jacques Monneraud</div>
+   </a>
+	  
+	<a href="https://www.timingold.com/" class="card" target="_blank" data-tags="Architecture">
+  <img src="https://media.licdn.com/dms/image/C560BAQG8I5Hmyjihag/company-logo_200_200/0/1630640223980/rowdyinc_logo?e=2147483647&v=beta&t=lo2D8DtePcSmOV9pWybrwJEHEhESRZ-KJv3-RBtdFjY" alt="Une brève histoire des lignes - Tim Ingold">
+  <div class="info">Une brève histoire des lignes - Tim Ingold</div>
+   </a>
+	  
+	<a href="https://www.peanuts.com/about/snoopy" class="card" target="_blank" data-tags="Tag1,Tag2,Tag3">
+  <img src="https://static.wixstatic.com/media/449abe_7b15686b2118476da4a733a7861dd772~mv2.jpg/v1/fill/w_624,h_624,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/sn-color.jpg" alt="Peanuts - Charles M. Schulz">
+  <div class="info">Peanuts - Charles M. Schulz</div>
+</a>
+	  
+	<a href="https://www.fnac.com/a15573322/Alpha-Wann-Don-Dada-Mixtape-Volume-1-CD-album" class="card" target="_blank" data-tags="Tag1,Tag2,Tag3">
+  <img src="https://tse4.mm.bing.net/th/id/OIP.I6vMxyIn9u0vDw3OrL_PBAHaHa?rs=1&pid=ImgDetMain&o=7&rm=3" alt="Don Dada mixtape vol.1 - Alpha Wann">
+  <div class="info">Don Dada mixtape vol.1 - Alpha Wann</div>
+</a>
+
+    <!-- Ajoute tes références ici en copiant la structure ci-dessus -->
+    <!-- N'oublie pas de modifier :
+         - href="..." : le lien vers le projet
+         - data-tags="..." : les tags séparés par des virgules (max 3)
+         - src="..." : l'URL de l'image
+         - alt="..." : description de l'image
+         - Le texte dans <div class="info"> : titre du projet
+    -->
+
+  </div>
+
+  <!-- ===== JAVASCRIPT ===== -->
+  <script>
+    (() => {
+      /* ===== INITIALISATION ===== */
+      const grid = document.getElementById('reference-list');
+      if (!grid) return;
+
+      // Récupération de toutes les cartes au chargement
+      const ALL_CARDS = Array.from(grid.querySelectorAll('.card')).map(n => n.cloneNode(true));
+      grid.innerHTML = '';
+
+      /* ===== VARIABLES GLOBALES ===== */
+      let pool = [];              // Pool de cartes filtrées
+      let index = 0;              // Index de progression
+      const BATCH = 20;           // Nombre de cartes à charger à la fois
+      const MAX_NODES = 200;      // Limite maximale de cartes dans le DOM
+      let activeTags = new Set(); // Tags de filtres actifs
+      let observer = null;        // Observer pour scroll infini
+      let sentinelElement = null; // Élément sentinel
+
+      /* ===== GESTION DU MENU DÉROULANT RECHERCHE ===== */
+      const searchToggle = document.querySelector('.search-toggle');
+      const searchDropdown = document.querySelector('.search-dropdown');
+
+      // Ouvrir/fermer le menu au clic
+      searchToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        searchDropdown.classList.toggle('show');
+      });
+
+      // Fermer le menu si on clique ailleurs
+      document.addEventListener('click', (e) => {
+        if (!searchDropdown.contains(e.target) && e.target !== searchToggle) {
+          searchDropdown.classList.remove('show');
+        }
+      });
+
+      /* ===== FONCTION DE MÉLANGE (Fisher-Yates) ===== */
+      function shuffle(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+      }
+
+      /* ===== VÉRIFICATION DES TAGS ===== */
+      // Vérifie si une carte correspond aux filtres actifs
+      function matchesTags(card) {
+        if (activeTags.size === 0) return true;
+        
+        const cardTags = (card.getAttribute('data-tags') || '').split(',').map(t => t.trim());
+        
+        // La carte doit avoir TOUS les tags actifs
+        for (let tag of activeTags) {
+          if (!cardTags.includes(tag)) return false;
+        }
+        return true;
+      }
+
+      /* ===== GESTION DU SCROLL INFINI ===== */
+      // Créer le sentinel pour le scroll infini
+      function createSentinel() {
+        if (sentinelElement) return;
+        
+        sentinelElement = document.createElement('div');
+        sentinelElement.id = 'sentinel';
+        grid.after(sentinelElement);
+
+        observer = new IntersectionObserver((entries) => {
+          if (entries[0].isIntersecting) {
+            appendBatch();
+          }
+        }, { 
+          root: null, 
+          rootMargin: '1000px', 
+          threshold: 0 
+        });
+        
+        observer.observe(sentinelElement);
+      }
+
+      // Détruire le sentinel et l'observer
+      function destroySentinel() {
+        if (observer) {
+          observer.disconnect();
+          observer = null;
+        }
+        if (sentinelElement) {
+          sentinelElement.remove();
+          sentinelElement = null;
+        }
+      }
+
+      /* ===== RESET DU POOL ===== */
+      // Réinitialise le pool de cartes selon les filtres
+      function resetPool() {
+        const filtered = ALL_CARDS.filter(c => matchesTags(c));
+        
+        // Si aucun filtre actif : scroll infini
+        // Si filtre(s) actif(s) : pas de scroll infini, tout afficher
+        if (activeTags.size === 0) {
+          pool = shuffle(filtered.slice());
+          index = 0;
+          grid.innerHTML = '';
+          createSentinel();
+          appendBatch();
+        } else {
+          destroySentinel();
+          pool = shuffle(filtered.slice());
+          index = 0;
+          grid.innerHTML = '';
+          // Afficher toutes les cartes filtrées d'un coup
+          pool.forEach(card => {
+            grid.appendChild(card.cloneNode(true));
+          });
+        }
+      }
+
+      /* ===== AJOUT D'UN LOT DE CARTES ===== */
+      // Ajoute un batch de cartes à la grille
+      function appendBatch() {
+        const end = Math.min(index + BATCH, pool.length);
+        for (let i = index; i < end; i++) {
+          grid.appendChild(pool[i].cloneNode(true));
+        }
+        index = end;
+
+        // Re-mélange si fin atteinte
+        if (index >= pool.length && activeTags.size === 0) {
+          pool = shuffle(pool);
+          index = 0;
+        }
+
+        // Limite mémoire : enlever les cartes du haut si trop nombreuses
+        while (grid.children.length > MAX_NODES) {
+          grid.removeChild(grid.firstElementChild);
+        }
+      }
+
+      /* ===== GESTION DES CLICS SUR LES TAGS ===== */
+      const tagElements = document.querySelectorAll('.tag');
+      tagElements.forEach(tagEl => {
+        tagEl.addEventListener('click', () => {
+          const tag = tagEl.getAttribute('data-tag');
+          
+          // Toggle du tag
+          if (activeTags.has(tag)) {
+            activeTags.delete(tag);
+            tagEl.classList.remove('active');
+          } else {
+            activeTags.add(tag);
+            tagEl.classList.add('active');
+          }
+          
+          resetPool();
+        });
+      });
+
+      /* ===== INITIALISATION AU CHARGEMENT ===== */
+      resetPool();
+    })();
+  </script>
+
+</body>
+</html>
