@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>copier.coller - à propos</title>
+  
+  <!-- Police Adobe Fonts - Nouvelle typo -->
+  <link rel="stylesheet" href="https://use.typekit.net/hqg8uet.css">
+  
+  <style>
+    /* ===== VARIABLES CSS ===== */
+    :root {
+      --fond: #FFFFFF;
+      --texte: #222;
+    }
+
+    /* ===== RESET ET BASE ===== */
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "acumin-variable", sans-serif;
+      font-variation-settings: "wght" 400;
+      font-weight: 400;
+      margin: 0;
+      padding: 0;
+      background-color: var(--fond);
+      color: var(--texte);
+    }
+
+    /* ===== HEADER FIXE ===== */
+    .fixed-top {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: var(--fond);
+      border-bottom: 1px solid var(--texte);
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 15px 30px;
+      background: var(--fond);
+    }
+
+    /* Logo à gauche */
+    header .logo {
+      font-size: 20px;
+      text-decoration: none;
+      color: var(--texte);
+      font-variation-settings: "wght" 400;
+      letter-spacing: 0.5px;
+    }
+
+    header .logo:hover {
+      opacity: 0.7;
+    }
+
+    /* Navigation décentrée (vers les 3/4 de la page) */
+    header nav {
+      display: flex;
+      gap: 40px;
+      position: absolute;
+      left: 70%;
+      transform: translateX(-50%);
+    }
+
+    header nav a {
+      font-family: "acumin-variable", sans-serif;
+      font-variation-settings: "wght" 400;
+      text-decoration: none;
+      color: var(--texte);
+      font-size: 14px;
+      letter-spacing: 0.5px;
+      transition: opacity 0.2s ease;
+    }
+
+    header nav a:hover {
+      opacity: 0.7;
+    }
+
+    /* ===== ESPACEMENT POUR HEADER FIXE ===== */
+    .content-spacer {
+      height: 60px;
+    }
+
+    /* ===== CONTENU PRINCIPAL ===== */
+    main {
+      max-width: 800px;
+      margin: 60px auto;
+      padding: 0 40px 80px;
+      line-height: 1.8;
+    }
+
+    main p {
+      font-variation-settings: "wght" 400;
+      font-size: 15px;
+      margin-bottom: 20px;
+      text-align: justify;
+    }
+
+    /* ===== ADAPTATION MOBILE ===== */
+    @media (max-width: 600px) {
+      header nav {
+        position: static;
+        transform: none;
+        gap: 20px;
+      }
+
+      main {
+        padding: 0 20px 60px;
+        margin: 40px auto;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== HEADER FIXE ===== -->
+  <div class="fixed-top">
+    <header>
+      <!-- Logo à gauche (cliquable) -->
+      <a href="copier.coller.02.html" class="logo">copier.coller</a>
+
+      <!-- Navigation au centre -->
+      <nav>
+        <a href="contact.html">contact</a>
+      </nav>
+
+      <!-- Espace vide à droite pour cohérence avec la page principale -->
+      <div style="width: 80px;"></div>
+    </header>
+  </div>
+
+  <!-- Espacement pour compenser le header fixe -->
+  <div class="content-spacer"></div>
+
+  <!-- ===== CONTENU À PROPOS ===== -->
+  <main>
+    <p>
+      copier.coller représente autant un outil de travail qu'un atlas des curiosités.
+    </p>
+    <p>
+      C’est un espace d’accumulation où s'assemblent des images, des lectures, des paysages… autant de fragments trouvés qui aiguisent notre regard et fabriquent notre expérience du monde.
+      Puisqu'il nous semble évident qu’aucune idée n’est jamais un surgissement pur mais naît d’un enchevêtrement de modèles, d'échos et de survivances, copier propose de regarder, récolter et comprendre ; coller, ensuite, permet de tester, croiser et adapter.
+      Parce que notre imaginaire est fait de sculptures insoupçonnées de références, copier.coller tente ainsi d'organiser ce désordre ; ou plutôt, lui offre un terrain où se déployer.
+    </p>
+    <p>
+      Les références apparaissent dans un ordre aléatoire, dessinant à chaque visite un récit différent qui se recompose à l'infini selon les hasards.
+      Espace mouvant, hétérogène et contradictoire, nous revendiquons la dérive comme méthode. Préciser sa recherche n’est pas une fin en soi : les chemins restent ouverts, déplaçables, indéterminés, proposant volontairement une forme d'indiscipline.
+      Bibliothèque en mouvement, laboratoire d’idées, réserve d’images, copier.coller est un lieu où les disciplines se répondent, s’entrechoquent et se contaminent. Un lieu sans hiérarchie où l’on se perd autant que l’on s’oriente.
+    </p>
+    <p>
+      copier.coller est notre modeste garde-manger, notre champ d'expérimentation ; libre à vous désormais de vous y égarer, de vous en saisir, de le prolonger.
+    </p>
+  </main>
+
+</body>
+</html>

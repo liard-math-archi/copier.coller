@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>copier.coller - contact</title>
+  
+  <!-- Police Adobe Fonts - Nouvelle typo -->
+  <link rel="stylesheet" href="https://use.typekit.net/hqg8uet.css">
+  
+  <style>
+    /* ===== VARIABLES CSS ===== */
+    :root {
+      --fond: #FFFFFF;
+      --texte: #222;
+    }
+
+    /* ===== RESET ET BASE ===== */
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "acumin-variable", sans-serif;
+      font-variation-settings: "wght" 400;
+      font-weight: 400;
+      margin: 0;
+      padding: 0;
+      background-color: var(--fond);
+      color: var(--texte);
+    }
+
+    /* ===== HEADER FIXE ===== */
+    .fixed-top {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: var(--fond);
+      border-bottom: 1px solid var(--texte);
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 15px 30px;
+      background: var(--fond);
+    }
+
+    /* Logo à gauche */
+    header .logo {
+      font-size: 20px;
+      text-decoration: none;
+      color: var(--texte);
+      font-variation-settings: "wght" 400;
+      letter-spacing: 0.5px;
+    }
+
+    header .logo:hover {
+      opacity: 0.7;
+    }
+
+    /* Navigation décentrée (vers les 3/4 de la page) */
+    header nav {
+      display: flex;
+      gap: 40px;
+      position: absolute;
+      left: 70%;
+      transform: translateX(-50%);
+    }
+
+    header nav a {
+      font-family: "acumin-variable", sans-serif;
+      font-variation-settings: "wght" 400;
+      text-decoration: none;
+      color: var(--texte);
+      font-size: 14px;
+      letter-spacing: 0.5px;
+      transition: opacity 0.2s ease;
+    }
+
+    header nav a:hover {
+      opacity: 0.7;
+    }
+
+    /* ===== ESPACEMENT POUR HEADER FIXE ===== */
+    .content-spacer {
+      height: 60px;
+    }
+
+    /* ===== CONTENU CONTACT ===== */
+    main {
+      max-width: 100%;
+      margin: 0;
+      padding: 60px 0 80px 0;
+    }
+
+    .contact-container {
+      display: flex;
+      justify-content: center;
+      gap: 60px;
+      padding: 0 40px;
+      flex-wrap: wrap;
+    }
+
+    .contact-item {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      max-width: 400px;
+    }
+
+    .contact-item img {
+      width: 300px;
+      height: 300px;
+      object-fit: cover;
+      margin-bottom: 20px;
+      border: 1px solid var(--texte);
+    }
+
+    .contact-info p {
+      font-family: "acumin-variable", sans-serif;
+      font-variation-settings: "wght" 400;
+      font-size: 14px;
+      margin: 4px 0;
+      line-height: 1.6;
+    }
+
+    .contact-info a {
+      color: var(--texte);
+      text-decoration: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .contact-info a:hover {
+      opacity: 0.7;
+    }
+
+    /* ===== ADAPTATION MOBILE ===== */
+    @media (max-width: 600px) {
+      header nav {
+        position: static;
+        transform: none;
+        gap: 20px;
+      }
+
+      .contact-container {
+        flex-direction: column;
+        align-items: center;
+        padding: 0 20px;
+      }
+
+      .contact-item {
+        align-items: center;
+        text-align: center;
+      }
+
+      .contact-item img {
+        width: 250px;
+        height: 250px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== HEADER FIXE ===== -->
+  <div class="fixed-top">
+    <header>
+      <!-- Logo à gauche (cliquable) -->
+      <a href="copier.coller.02.html" class="logo">copier.coller</a>
+
+      <!-- Navigation au centre -->
+      <nav>
+        <a href="propos.html">à propos</a>
+      </nav>
+
+      <!-- Espace vide à droite pour cohérence avec la page principale -->
+      <div style="width: 80px;"></div>
+    </header>
+  </div>
+
+  <!-- Espacement pour compenser le header fixe -->
+  <div class="content-spacer"></div>
+
+  <!-- ===== CONTENU CONTACT ===== -->
+  <main>
+    <div class="contact-container">
+      <!-- CONTACT 01 -->
+      <div class="contact-item">
+        <img src="photo ben n&b.jpg" alt="Benjamin Boulanger">
+        <div class="contact-info">
+          <p>boulanger benjamin</p>
+          <p>00 00 00 00 00</p>
+          <p><a href="mailto:ben.boul@gmail.com">ben.boul@gmail.com</a></p>
+        </div>
+      </div>
+
+      <!-- CONTACT 02 -->
+      <div class="contact-item">
+        <img src="photo math n&b.jpg" alt="Mathéo Liard">
+        <div class="contact-info">
+          <p>liard matheo</p>
+          <p>07 68 93 23 32</p>
+          <p><a href="mailto:liard.math@gmail.com">liard.math@gmail.com</a></p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+</body>
+</html>
