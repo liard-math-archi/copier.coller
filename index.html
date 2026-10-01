@@ -356,6 +356,129 @@
       content: " · admin";
     }
 
+
+    /* ===== OUTILS ADMIN : ÉTAPE 2 ===== */
+    .admin-add {
+      display: none;
+      border: 0;
+      background: none;
+      padding: 0;
+      font: inherit;
+      font-size: 22px;
+      line-height: 1;
+      cursor: pointer;
+      color: var(--texte);
+    }
+    body.admin-mode .admin-add { display: inline-block; }
+
+    .admin-card-tools {
+      display: none;
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      z-index: 5;
+      gap: 5px;
+    }
+    body.admin-mode .card:hover .admin-card-tools { display: flex; }
+    .admin-card-tools button {
+      border: 1px solid var(--texte);
+      background: rgba(255,255,255,.94);
+      color: var(--texte);
+      border-radius: 0;
+      padding: 5px 7px;
+      font: inherit;
+      font-size: 11px;
+      cursor: pointer;
+    }
+
+    .reference-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 1100;
+      background: rgba(255,255,255,.94);
+      align-items: center;
+      justify-content: center;
+      padding: 30px;
+    }
+    .reference-modal.show { display: flex; }
+    .reference-panel {
+      width: min(520px, 100%);
+      max-height: calc(100vh - 60px);
+      overflow: auto;
+      border: 1px solid var(--texte);
+      background: var(--fond);
+      padding: 28px;
+      position: relative;
+    }
+    .reference-panel h2 {
+      margin: 0 0 25px;
+      font-size: 18px;
+      font-weight: 400;
+      font-variation-settings: "wght" 400;
+    }
+    .reference-close {
+      position: absolute;
+      top: 16px;
+      right: 18px;
+      border: 0;
+      background: none;
+      font: inherit;
+      font-size: 18px;
+      cursor: pointer;
+    }
+    .reference-field { margin-bottom: 20px; }
+    .reference-field label {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 6px;
+    }
+    .reference-field input {
+      width: 100%;
+      border: 0;
+      border-bottom: 1px solid var(--texte);
+      border-radius: 0;
+      background: transparent;
+      padding: 8px 0;
+      font: inherit;
+      outline: none;
+    }
+    .reference-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+    .reference-tag {
+      border: 1px solid #aaa;
+      background: none;
+      border-radius: 0;
+      padding: 5px 8px;
+      font: inherit;
+      font-size: 11px;
+      cursor: pointer;
+    }
+    .reference-tag.active {
+      border-color: var(--texte);
+      background: var(--texte);
+      color: var(--fond);
+    }
+    .reference-help, .reference-status {
+      font-size: 11px;
+      margin-top: 8px;
+    }
+    .reference-save {
+      border: 1px solid var(--texte);
+      background: var(--texte);
+      color: var(--fond);
+      border-radius: 0;
+      padding: 9px 16px;
+      font: inherit;
+      font-size: 13px;
+      cursor: pointer;
+      margin-top: 4px;
+    }
+
   </style>
 </head>
 <body>
@@ -374,6 +497,7 @@
 
       <!-- Actions à droite -->
       <div class="header-actions">
+        <button class="admin-add" id="admin-add" type="button" aria-label="Ajouter une référence">+</button>
         <button class="login-toggle" id="login-toggle" type="button">se connecter</button>
         <div class="search-container">
         <button class="search-toggle">rechercher</button>
@@ -440,6 +564,36 @@
         <input id="auth-password" type="password" autocomplete="current-password" required>
         <button class="auth-submit" type="submit">valider</button>
         <p class="auth-error" id="auth-error" aria-live="polite"></p>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- ===== AJOUT / MODIFICATION D'UNE RÉFÉRENCE ===== -->
+  <div class="reference-modal" id="reference-modal" aria-hidden="true">
+    <div class="reference-panel" role="dialog" aria-modal="true" aria-labelledby="reference-modal-title">
+      <button class="reference-close" id="reference-close" type="button" aria-label="Fermer">×</button>
+      <h2 id="reference-modal-title">ajouter une référence</h2>
+      <form id="reference-form">
+        <div class="reference-field">
+          <label for="reference-title">titre</label>
+          <input id="reference-title" type="text" required>
+        </div>
+        <div class="reference-field">
+          <label for="reference-image">image</label>
+          <input id="reference-image" type="url" placeholder="https://…" required>
+        </div>
+        <div class="reference-field">
+          <label for="reference-url">site / lien</label>
+          <input id="reference-url" type="text" placeholder="https://…" required>
+        </div>
+        <div class="reference-field">
+          <label>filtres</label>
+          <div class="reference-tags" id="reference-tags"></div>
+          <div class="reference-help">3 filtres maximum</div>
+        </div>
+        <button class="reference-save" type="submit">enregistrer</button>
+        <div class="reference-status" id="reference-status" aria-live="polite"></div>
       </form>
     </div>
   </div>
@@ -2250,6 +2404,121 @@
       resetPool();
     })();
   </script>
+
+
+<script>
+  (() => {
+    /* ===== INTERFACE ADMIN : ÉTAPE 2 =====
+       Cette étape installe l'interface. Les écritures Supabase arrivent à l'étape 3. */
+    const grid = document.getElementById('reference-list');
+    const addButton = document.getElementById('admin-add');
+    const modal = document.getElementById('reference-modal');
+    const closeButton = document.getElementById('reference-close');
+    const form = document.getElementById('reference-form');
+    const modalTitle = document.getElementById('reference-modal-title');
+    const titleInput = document.getElementById('reference-title');
+    const imageInput = document.getElementById('reference-image');
+    const urlInput = document.getElementById('reference-url');
+    const tagsBox = document.getElementById('reference-tags');
+    const status = document.getElementById('reference-status');
+    let editingCard = null;
+    let selectedTags = new Set();
+
+    const availableTags = [...document.querySelectorAll('.search-dropdown .tag')]
+      .map(el => ({ value: el.dataset.tag, label: el.textContent.trim() }));
+
+    function renderTags() {
+      tagsBox.innerHTML = '';
+      availableTags.forEach(tag => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'reference-tag' + (selectedTags.has(tag.value) ? ' active' : '');
+        button.textContent = tag.label;
+        button.dataset.value = tag.value;
+        button.addEventListener('click', () => {
+          if (selectedTags.has(tag.value)) selectedTags.delete(tag.value);
+          else if (selectedTags.size < 3) selectedTags.add(tag.value);
+          renderTags();
+        });
+        tagsBox.appendChild(button);
+      });
+    }
+
+    function openReferenceModal(card = null) {
+      editingCard = card;
+      selectedTags = new Set();
+      status.textContent = '';
+      if (card) {
+        modalTitle.textContent = 'modifier une référence';
+        titleInput.value = card.querySelector('.info')?.textContent.trim() || '';
+        imageInput.value = card.querySelector('img')?.src || '';
+        urlInput.value = card.getAttribute('href') || '';
+        (card.dataset.tags || '').split(',').map(t => t.trim()).filter(Boolean).slice(0,3).forEach(t => selectedTags.add(t));
+      } else {
+        modalTitle.textContent = 'ajouter une référence';
+        form.reset();
+      }
+      renderTags();
+      modal.classList.add('show');
+      modal.setAttribute('aria-hidden', 'false');
+      setTimeout(() => titleInput.focus(), 0);
+    }
+
+    function closeReferenceModal() {
+      modal.classList.remove('show');
+      modal.setAttribute('aria-hidden', 'true');
+      editingCard = null;
+      selectedTags = new Set();
+      form.reset();
+      status.textContent = '';
+    }
+
+    function addTools(card) {
+      if (card.querySelector('.admin-card-tools')) return;
+      const tools = document.createElement('div');
+      tools.className = 'admin-card-tools';
+      tools.innerHTML = '<button type="button" data-admin-action="edit">modifier</button><button type="button" data-admin-action="delete">supprimer</button>';
+      card.appendChild(tools);
+    }
+
+    addButton.addEventListener('click', () => openReferenceModal());
+    closeButton.addEventListener('click', closeReferenceModal);
+    modal.addEventListener('click', e => { if (e.target === modal) closeReferenceModal(); });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && modal.classList.contains('show')) closeReferenceModal();
+    });
+
+    grid.addEventListener('mouseover', e => {
+      if (!document.body.classList.contains('admin-mode')) return;
+      const card = e.target.closest('.card');
+      if (card) addTools(card);
+    });
+
+    grid.addEventListener('click', e => {
+      const button = e.target.closest('[data-admin-action]');
+      if (!button) return;
+      e.preventDefault();
+      e.stopPropagation();
+      const card = button.closest('.card');
+      if (button.dataset.adminAction === 'edit') openReferenceModal(card);
+      if (button.dataset.adminAction === 'delete') {
+        const name = card.querySelector('.info')?.textContent.trim() || 'cette référence';
+        if (confirm(`Supprimer « ${name} » ?`)) {
+          alert('L’interface est prête. La suppression définitive sera branchée à Supabase à l’étape 3.');
+        }
+      }
+    });
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      if (selectedTags.size === 0) {
+        status.textContent = 'choisis au moins un filtre';
+        return;
+      }
+      status.textContent = 'interface validée — l’enregistrement Supabase arrive à l’étape 3';
+    });
+  })();
+</script>
 
 </body>
 </html>
